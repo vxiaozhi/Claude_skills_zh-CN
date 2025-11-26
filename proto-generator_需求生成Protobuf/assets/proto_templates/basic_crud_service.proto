@@ -1,0 +1,135 @@
+/*
+ * Basic CRUD Service Template
+ * 
+ * This template provides a standard CRUD service structure
+ * that can be customized for specific business entities.
+ */
+
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// ==================== Message Definitions ====================
+
+// 基础实体模板
+message Entity {
+  // 实体唯一标识符
+  string id = 1;
+  
+  // 实体名称
+  string name = 2;
+  
+  // 实体描述
+  string description = 3;
+  
+  // 实体状态
+  EntityStatus status = 4;
+  
+  // 创建时间
+  google.protobuf.Timestamp created_at = 5;
+  
+  // 更新时间
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+// 实体状态枚举
+enum EntityStatus {
+  ENTITY_STATUS_UNSPECIFIED = 0;
+  ENTITY_STATUS_ACTIVE = 1;
+  ENTITY_STATUS_INACTIVE = 2;
+  ENTITY_STATUS_DELETED = 3;
+}
+
+// 创建实体请求
+message CreateEntityRequest {
+  string name = 1;
+  string description = 2;
+}
+
+// 创建实体响应
+message CreateEntityResponse {
+  Entity entity = 1;
+}
+
+// 获取实体请求
+message GetEntityRequest {
+  string id = 1;
+}
+
+// 获取实体响应
+message GetEntityResponse {
+  Entity entity = 1;
+}
+
+// 更新实体请求
+message UpdateEntityRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  EntityStatus status = 4;
+}
+
+// 更新实体响应
+message UpdateEntityResponse {
+  Entity entity = 1;
+}
+
+// 删除实体请求
+message DeleteEntityRequest {
+  string id = 1;
+}
+
+// 删除实体响应
+message DeleteEntityResponse {
+  bool success = 1;
+}
+
+// 列表实体请求
+message ListEntitiesRequest {
+  // 页面大小
+  int32 page_size = 1;
+  
+  // 页面令牌
+  string page_token = 2;
+  
+  // 过滤条件
+  string filter = 3;
+  
+  // 排序字段
+  string order_by = 4;
+}
+
+// 列表实体响应
+message ListEntitiesResponse {
+  // 实体列表
+  repeated Entity entities = 1;
+  
+  // 下一页令牌
+  string next_page_token = 2;
+  
+  // 总数量
+  int32 total_count = 3;
+}
+
+// ==================== Service Definitions ====================
+
+// 实体管理服务
+service EntityService {
+  // 创建实体
+  rpc CreateEntity(CreateEntityRequest) returns (CreateEntityResponse);
+  
+  // 获取实体
+  rpc GetEntity(GetEntityRequest) returns (GetEntityResponse);
+  
+  // 更新实体
+  rpc UpdateEntity(UpdateEntityRequest) returns (UpdateEntityResponse);
+  
+  // 删除实体
+  rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse);
+  
+  // 列出实体
+  rpc ListEntities(ListEntitiesRequest) returns (ListEntitiesResponse);
+}
